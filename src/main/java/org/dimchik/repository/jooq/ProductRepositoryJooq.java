@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static org.dimchik.repository.mapper.ProductRowMapper.mapRow;
 import static org.jooq.generated.tables.Products.PRODUCTS;
-import static org.dimchik.repository.mapper.ProductRowMapper.fromProductsRecord;
 
 @Repository
 public class ProductRepositoryJooq implements ProductRepository {
@@ -24,13 +24,13 @@ public class ProductRepositoryJooq implements ProductRepository {
 
     @Override
     public List<Product> findAll() {
-        return dsl.selectFrom(PRODUCTS).fetch(ProductRowMapper::fromRecord);
+        return dsl.selectFrom(PRODUCTS).fetch(ProductRowMapper::mapRow);
     }
 
     @Override
     public Product findById(Long id) {
         Optional<Product> product = dsl.selectFrom(PRODUCTS)
-                .where(PRODUCTS.ID.eq(id)).fetchOptional(ProductRowMapper::fromRecord);
+                .where(PRODUCTS.ID.eq(id)).fetchOptional(ProductRowMapper::mapRow);
 
         if (product.isEmpty()) {
             throw new IllegalArgumentException("Product with id " + id + " not found");
@@ -54,7 +54,7 @@ public class ProductRepositoryJooq implements ProductRepository {
             throw new IllegalStateException("Insert failed");
         }
 
-        return fromProductsRecord(record);
+        return mapRow(record);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class ProductRepositoryJooq implements ProductRepository {
             throw new IllegalStateException("Updating failed");
         }
 
-        return fromProductsRecord(productsRecord);
+        return mapRow(productsRecord);
     }
 
     @Override
