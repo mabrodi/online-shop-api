@@ -1,4 +1,4 @@
-package org.dimchik.request;
+package org.dimchik.web.request;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
