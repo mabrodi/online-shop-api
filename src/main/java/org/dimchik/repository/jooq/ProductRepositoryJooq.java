@@ -28,9 +28,15 @@ public class ProductRepositoryJooq implements ProductRepository {
     }
 
     @Override
-    public Optional<Product> findById(Long id) {
-        return dsl.selectFrom(PRODUCTS)
+    public Product findById(Long id) {
+        Optional<Product> product = dsl.selectFrom(PRODUCTS)
                 .where(PRODUCTS.ID.eq(id)).fetchOptional(ProductRowMapper::fromRecord);
+
+        if (product.isEmpty()) {
+            throw new IllegalArgumentException("Product with id " + id + " not found");
+        }
+
+        return product.get();
     }
 
     @Override
