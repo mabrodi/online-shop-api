@@ -6,16 +6,16 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class ProductRequest {
-    @NotBlank
-    @Size(max = 255)
-    String name;
+    @NotBlank(message = "Product name cannot be blank")
+    @Size(max = 255, message = "Product name must be less than 255 characters")
+    private String name;
 
-    @NotBlank
-    String description;
+    @NotBlank(message = "Description cannot be blank")
+    private String description;
 
-    @NotNull
-    @DecimalMin("0.0")
-    Double price;
+    @NotNull(message = "Price cannot be null")
+    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
+    private Double price;
 
     public String getName() {
         return name;
