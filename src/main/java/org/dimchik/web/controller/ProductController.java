@@ -20,8 +20,8 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> findAll() {
-        return productService.findAll();
+    public ResponseEntity<List<Product>> findAll() {
+        return ResponseEntity.ok(productService.findAll());
     }
 
     @GetMapping("/{id}")
@@ -36,27 +36,19 @@ public class ProductController {
     @PostMapping
     @ResponseStatus(org.springframework.http.HttpStatus.CREATED)
     public ResponseEntity<Product> create(@Valid @RequestBody ProductRequest request) {
-        Product product = new Product();
-        product.setName(request.getName());
-        product.setPrice(request.getPrice());
-        product.setDescription(request.getDescription());
+        Product product = convertToEntity(request);
 
-        Product createdProduct = productService.create(product);
-
-        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(productService.create(product));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Product> update(@PathVariable long id, @Valid @RequestBody ProductRequest request) {
-        Product product = new Product();
+        Product product = convertToEntity(request);
         product.setId(id);
-        product.setName(request.getName());
-        product.setPrice(request.getPrice());
-        product.setDescription(request.getDescription());
 
-        Product updatedProduct = productService.update(product);
-
-        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+        return ResponseEntity.ok(productService.update(product));
     }
 
     @DeleteMapping("/{id}")
@@ -67,5 +59,14 @@ public class ProductController {
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    private Product convertToEntity(ProductRequest request) {
+        Product product = new Product();
+        product.setName(request.getName());
+        product.setPrice(request.getPrice());
+        product.setDescription(request.getDescription());
+
+        return product;
     }
 }
